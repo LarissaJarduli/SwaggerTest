@@ -1,0 +1,137 @@
+openapi: 3.0.3
+info:
+  title: API de Vendas ORDS
+  version: 1.0.0
+  description: Exemplo completo de documentação Swagger gerada para ORDS
+paths:
+  /vendas/clientes:
+    get:
+      summary: Listar clientes
+      description: Retorna a lista de todos os clientes
+      tags:
+        - Clientes
+      responses:
+        '200':
+          description: Lista de clientes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Cliente'
+  /vendas/pedidos/{id}:
+    get:
+      summary: Obter pedido por ID
+      tags:
+        - Pedidos
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do pedido
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Pedido encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pedido'
+        '404':
+          description: Pedido não encontrado
+    put:
+      summary: Atualizar pedido
+      tags:
+        - Pedidos
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do pedido a atualizar
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pedido'
+      responses:
+        '200':
+          description: Pedido atualizado
+    delete:
+      summary: Remover pedido
+      tags:
+        - Pedidos
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Pedido removido com sucesso
+  /vendas/pedidos:
+    post:
+      summary: Criar novo pedido
+      tags:
+        - Pedidos
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pedido'
+      responses:
+        '201':
+          description: Pedido criado
+components:
+  schemas:
+    Cliente:
+      type: object
+      properties:
+        id:
+          type: integer
+        nome:
+          type: string
+        cpf:
+          type: string
+    Pedido:
+      type: object
+      properties:
+        id:
+          type: integer
+        data:
+          type: string
+          format: date
+        cliente_id:
+          type: integer
+        valor_total:
+          type: number
+          format: float
+        itens:
+          type: array
+          items:
+            $ref: '#/components/schemas/ItemPedido'
+      required:
+        - cliente_id
+        - data
+        - valor_total
+    ItemPedido:
+      type: object
+      properties:
+        produto_id:
+          type: integer
+        quantidade:
+          type: integer
+        preco_unitario:
+          type: number
+          format: float
+      required:
+        - produto_id
+        - quantidade
+tags:
+  - name: Clientes
+  - name: Pedidos
