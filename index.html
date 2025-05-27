@@ -1,20 +1,23 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Documentação Swagger</title>
-  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist/swagger-ui.css" />
+  <title>Swagger UI - Minha API</title>
+  <link rel="stylesheet" type="text/css" href="swagger-ui/swagger-ui.css" />
 </head>
 <body>
   <div id="swagger-ui"></div>
-
-  <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
+  <script src="swagger-ui/swagger-ui-bundle.js"></script>
+  <script src="swagger-ui/swagger-ui-standalone-preset.js"></script>
   <script>
     window.onload = () => {
       SwaggerUIBundle({
-        url: "swagger.json",
-        dom_id: "#swagger-ui",
-        presets: [SwaggerUIBundle.presets.apis],
+        url: "swagger.yaml",
+        dom_id: '#swagger-ui',
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIStandalonePreset
+        ],
         layout: "BaseLayout"
       });
     };
