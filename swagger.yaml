@@ -1,0 +1,727 @@
+openapi: 3.0.0
+info:
+  title: Applix API vendas/v3
+  version: 1.0.0
+servers:
+  - url: https://appdes.connectuse.com.br/apps/wt/vendas/v3/
+security:
+  - bearerAuth: []
+paths:
+  /CategoriaProduto:
+    get:
+      description: Lista Categorias de Produto
+      responses:
+        '200':
+          description: Retorno de sucesso com a lista de categorias de produto
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "SUCESSO"
+                  categoriaproduto:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        codigo:
+                          type: string
+                          example: "194"
+                        descricao:
+                          type: string
+                          example: "Material"
+                        codigopai:
+                          type: string
+                          nullable: true
+                          example: "61"
+              example:
+                status: "SUCESSO"
+                categoriaproduto:
+                  - codigo: "61"
+                    descricao: "Estrutura de Categoria de Produtos"
+                    codigopai: null
+                  - codigo: "194"
+                    descricao: "Material"
+                    codigopai: "61"
+                  - codigo: "195"
+                    descricao: "Sólido"
+                    codigopai: "61"
+                  - codigo: "196"
+                    descricao: "Ácido"
+                    codigopai: "61"
+        '401':
+          description: Erro de autenticação
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "ERRO"
+                  mensagem:
+                    type: string
+                    example: "Autenticação inválida."
+              example:
+                status: "ERRO"
+                mensagem: "Autenticação inválida."
+  /CondicaoPagto:
+    get:
+      description: Lista Condições de Pagamentos
+      responses:
+        '200':
+          description: The queried record.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: ["SUCESSO", "ERRO"]
+                    example: SUCESSO
+                  condicaopagto:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        codigo:
+                          type: string
+                          example: "00000270"
+                        descricao:
+                          type: string
+                          example: "* A Vista"
+                        tipo:
+                          type: string
+                          example: "DDL"
+                        prazos:
+                          type: string
+                          example: "0"
+                        situacao:
+                          type: string
+                          example: "ATIVO"
+                        datainclusao:
+                          type: string
+                          format: date-time
+                          example: null
+                        ultimaalteracao:
+                          type: string
+                          format: date-time
+                          example: null
+        '401':
+          description: Erro de autenticação
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "ERRO"
+                  mensagem:
+                    type: string
+                    example: "Autenticação inválida."
+              example:
+                status: "ERRO"
+                mensagem: "Autenticação inválida."
+  /ContasReceber:
+    get:
+      description: Retrieve a record from vendas/v3
+      responses:
+        '200':
+          description: The queried record.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensagem:
+                    type: string
+                  contasreceber:
+                    $ref: '#/components/schemas/RESULTSET'
+                  status:
+                    type: string
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+  /FormaCobranca:
+    get:
+      description: Retrieve a record from vendas/v3
+      responses:
+        '200':
+          description: The queried record.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensagem:
+                    type: string
+                  formacobranca:
+                    $ref: '#/components/schemas/RESULTSET'
+                  status:
+                    type: string
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+  /GrupoCliente:
+    get:
+      description: Retrieve a record from vendas/v3
+      responses:
+        '200':
+          description: The queried record.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensagem:
+                    type: string
+                  grupocliente:
+                    $ref: '#/components/schemas/RESULTSET'
+                  status:
+                    type: string
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+  /InclusaoCliente:
+    post:
+      description: Create a new record on vendas/v3
+      responses:
+        '201':
+          description: The successfully created record.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/vendas_v3_ITEM'
+  /InclusaoCliente/Anexo:
+    post:
+      description: Create a new record on vendas/v3
+      responses:
+        '201':
+          description: The successfully created record.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/vendas_v3_ITEM_2'
+  /InclusaoOrcamento:
+    post:
+      description: Create a new record on vendas/v3
+      responses:
+        '201':
+          description: The successfully created record.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/vendas_v3_ITEM'
+  /InclusaoPedido:
+    post:
+      description: Create a new record on vendas/v3
+      responses:
+        '201':
+          description: The successfully created record.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/vendas_v3_ITEM'
+  /ListaClientes:
+    get:
+      description: Retrieve a record from vendas/v3
+      responses:
+        '200':
+          description: The queried record.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensagem:
+                    type: string
+                  clientes:
+                    $ref: '#/components/schemas/RESULTSET'
+                  status:
+                    type: string
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+  /ListaNotaFiscal/{mod}/{numero}:
+    get:
+      description: Retrieve a record from vendas/v3
+      responses:
+        '200':
+          description: The queried record.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensagem:
+                    type: string
+                  notafiscal:
+                    $ref: '#/components/schemas/RESULTSET'
+                  status:
+                    type: string
+      parameters:
+        - name: mod
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: ^[^/]+$
+          description: implicit
+        - name: numero
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: ^[^/]+$
+          description: implicit
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+  /ListaNotasFiscais:
+    get:
+      description: Retrieve a record from vendas/v3
+      responses:
+        '200':
+          description: The queried record.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensagem:
+                    type: string
+                  notasfiscais:
+                    $ref: '#/components/schemas/RESULTSET'
+                  status:
+                    type: string
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+        - name: cnpjcpfcliente
+          in: query
+          schema:
+            type: string
+          required: true
+        - name: datafinal
+          in: query
+          schema:
+            type: string
+          required: true
+        - name: datainicial
+          in: query
+          schema:
+            type: string
+          required: true
+        - name: mod
+          in: query
+          schema:
+            type: string
+          required: true
+  /ListaOrcamento/{numero}:
+    get:
+      description: Retrieve a record from vendas/v3
+      responses:
+        '200':
+          description: The queried record.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensagem:
+                    type: string
+                  orcamento:
+                    $ref: '#/components/schemas/RESULTSET'
+                  status:
+                    type: string
+      parameters:
+        - name: numero
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: ^[^/]+$
+          description: implicit
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+  /ListaOrcamentos:
+    get:
+      description: Retrieve a record from vendas/v3
+      responses:
+        '200':
+          description: The queried record.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensagem:
+                    type: string
+                  orcamentos:
+                    $ref: '#/components/schemas/RESULTSET'
+                  status:
+                    type: string
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+        - name: cnpjcpfcliente
+          in: query
+          schema:
+            type: string
+          required: true
+        - name: dataenvio
+          in: query
+          schema:
+            type: string
+          required: true
+        - name: datafinal
+          in: query
+          schema:
+            type: string
+          required: true
+        - name: datainicial
+          in: query
+          schema:
+            type: string
+          required: true
+        - name: situacao
+          in: query
+          schema:
+            type: string
+          required: true
+        - name: vendedor
+          in: query
+          schema:
+            type: string
+          required: true
+  /ListaPedido/{numero}:
+    get:
+      description: Retrieve a record from vendas/v3
+      responses:
+        '200':
+          description: The queried record.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensagem:
+                    type: string
+                  pedido:
+                    $ref: '#/components/schemas/RESULTSET'
+                  status:
+                    type: string
+      parameters:
+        - name: numero
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: ^[^/]+$
+          description: implicit
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+  /ListaPedidos:
+    get:
+      description: Retrieve a record from vendas/v3
+      responses:
+        '200':
+          description: The queried record.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensagem:
+                    type: string
+                  pedidos:
+                    $ref: '#/components/schemas/RESULTSET'
+                  status:
+                    type: string
+                  totalPorPagina:
+                    type: integer
+                  totalRegistros:
+                    type: integer
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+        - name: cnpjcpfcliente
+          in: query
+          schema:
+            type: string
+          required: true
+        - name: dataautorizacao
+          in: query
+          schema:
+            type: string
+          required: true
+        - name: datafinal
+          in: query
+          schema:
+            type: string
+          required: true
+        - name: datainicial
+          in: query
+          schema:
+            type: string
+          required: true
+        - name: situacao
+          in: query
+          schema:
+            type: string
+          required: true
+        - name: vendedor
+          in: query
+          schema:
+            type: string
+          required: true
+  /MovtoSaidaConsumo:
+    post:
+      description: Create a new record on vendas/v3
+      responses:
+        '201':
+          description: The successfully created record.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/vendas_v3_ITEM'
+  /Produtos:
+    get:
+      description: Retrieve a record from vendas/v3
+      responses:
+        '200':
+          description: The queried record.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensagem:
+                    type: string
+                  produtos:
+                    $ref: '#/components/schemas/RESULTSET'
+                  status:
+                    type: string
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+  /SaldoEstoque:
+    get:
+      description: Retrieve a record from vendas/v3
+      responses:
+        '200':
+          description: The queried record.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensagem:
+                    type: string
+                  saldoestoque:
+                    $ref: '#/components/schemas/RESULTSET'
+                  status:
+                    type: string
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+  /Servicos:
+    get:
+      description: Retrieve a record from vendas/v3
+      responses:
+        '200':
+          description: The queried record.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensagem:
+                    type: string
+                  servicos:
+                    $ref: '#/components/schemas/RESULTSET'
+                  status:
+                    type: string
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+  /SucatasReceber:
+    get:
+      description: Retrieve a record from vendas/v3
+      responses:
+        '200':
+          description: The queried record.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensagem:
+                    type: string
+                  sucatasreceber:
+                    $ref: '#/components/schemas/RESULTSET'
+                  status:
+                    type: string
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+  /TabelaPrecos:
+    get:
+      description: Retrieve a record from vendas/v3
+      responses:
+        '200':
+          description: The queried record.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensagem:
+                    type: string
+                  tabelaprecos:
+                    $ref: '#/components/schemas/RESULTSET'
+                  status:
+                    type: string
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+  /Vendedores:
+    get:
+      description: Retrieve a record from vendas/v3
+      responses:
+        '200':
+          description: The queried record.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensagem:
+                    type: string
+                  vendedores:
+                    $ref: '#/components/schemas/RESULTSET'
+                  status:
+                    type: string
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    RESULTSET:
+      type: string
+    STRING:
+      type: string
+    vendas_v3_ITEM:
+      properties:
+        Authorization:
+          type: string
+        body:
+          type: string
+    vendas_v3_ITEM_2:
+      properties:
+        Authorization:
+          type: string
+        body:
+          type: string
+        cnpjcpfcliente:
+          type: string
+        content_type:
+          type: string
+        filename:
+          type: string
+        mimetype:
+          type: string
