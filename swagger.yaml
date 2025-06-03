@@ -1,56 +1,125 @@
 openapi: 3.0.0
 info:
-  title: Applix API vendas/v3
+  title: Applix API v3
   version: 1.0.0
+  description: >
+    API REST para integração com os módulos ERP do sistema Applix.
+    Esta API permite operações como consulta de produtos, clientes, orçamentos,
+    pedidos e condições de pagamento.
+
 servers:
-  - url: https://appdes.connectuse.com.br/apps/wt/vendas/v3/
+  - url: https://appdes.connectuse.com.br/apps/wt/
+
+tags:
+  - name: vendas/v3
+    description: Módulo de vendas
+  - name: financ/v3
+    description: Módulo de financeiro
+  - name: webdesk/v3
+    description: Módulo de webdesk
+
 security:
   - bearerAuth: []
+
 paths:
-  /CategoriaProduto:
+  /vendas/v3/CategoriaProduto:
     get:
-      description: Lista Categorias de Produto
+      tags:
+        - vendas/v3
+      summary: Lista categorias de produto
+      description: >
+        Retorna uma lista paginada de categorias de produtos, com metadados sobre a quantidade total, controle de paginação,
+        e nome do arquivo de origem. Ideal para interfaces com rolagem ou filtros.
+      parameters:
+        - name: i_limit
+          in: query
+          description: Número máximo de registros retornados por página
+          required: false
+          schema:
+            type: integer
+            default: 100
+        - name: i_offset
+          in: query
+          description: Posição inicial da consulta atual (para paginação)
+          required: false
+          schema:
+            type: integer
+            default: 0
       responses:
         '200':
-          description: Retorno de sucesso com a lista de categorias de produto
+          description: Retorno de sucesso com a lista de categorias de produto.
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  status:
-                    type: string
-                    example: "SUCESSO"
-                  categoriaproduto:
+                  items:
                     type: array
+                    description: Lista de categorias de produto.
                     items:
                       type: object
                       properties:
                         codigo:
                           type: string
+                          description: Código da categoria.
                           example: "194"
                         descricao:
                           type: string
+                          description: Descrição da categoria.
                           example: "Material"
                         codigopai:
                           type: string
                           nullable: true
+                          description: Código da categoria pai (se existir).
                           example: "61"
+                  totalCount:
+                    type: integer
+                    description: Total de registros disponíveis na base de dados.
+                    example: 57
+                  limit:
+                    type: integer
+                    description: Número máximo de registros retornados por página.
+                    example: 2
+                  offset:
+                    type: integer
+                    description: Posição inicial da consulta atual (para paginação).
+                    example: 1
+                  filename:
+                    type: string
+                    description: Nome do recurso/arquivo retornado.
+                    example: "CategoriaProduto"
+                  count:
+                    type: integer
+                    description: Quantidade de registros retornados nesta página.
+                    example: 2
+                  hasMore:
+                    type: boolean
+                    description: Indica se há mais registros além dos retornados.
+                    example: true
+                  status:
+                    type: string
+                    description: Status da requisição.
+                    example: "SUCCESS"
+                  message:
+                    type: string
+                    description: Mensagem adicional da API.
+                    example: "Dados retornados com sucesso"
               example:
-                status: "SUCESSO"
-                categoriaproduto:
-                  - codigo: "61"
-                    descricao: "Estrutura de Categoria de Produtos"
-                    codigopai: null
+                items:
                   - codigo: "194"
                     descricao: "Material"
                     codigopai: "61"
                   - codigo: "195"
                     descricao: "Sólido"
                     codigopai: "61"
-                  - codigo: "196"
-                    descricao: "Ácido"
-                    codigopai: "61"
+                totalCount: 57
+                limit: 2
+                offset: 1
+                filename: "CategoriaProduto"
+                count: 2
+                hasMore: true
+                status: "SUCCESS"
+                message: "Dados retornados com sucesso"
         '401':
           description: Erro de autenticação
           content:
@@ -60,56 +129,123 @@ paths:
                 properties:
                   status:
                     type: string
-                    example: "ERRO"
+                    example: "ERROR"
                   mensagem:
                     type: string
                     example: "Autenticação inválida."
               example:
-                status: "ERRO"
+                status: "ERROR"
                 mensagem: "Autenticação inválida."
-  /CondicaoPagto:
+
+  /vendas/v3/CondicaoPagto:
     get:
-      description: Lista Condições de Pagamentos
+      tags:
+        - vendas/v3
+      summary: Lista condições de pagamento
+      description: >
+        Retorna uma lista paginada de condições de pagamento, com metadados sobre a quantidade total, controle de paginação,
+        e nome do arquivo de origem. Ideal para interfaces com rolagem ou filtros.
+      parameters:
+        - name: i_limit
+          in: query
+          description: Número máximo de registros retornados por página
+          required: false
+          schema:
+            type: integer
+            default: 100
+        - name: i_offset
+          in: query
+          description: Posição inicial da consulta atual (para paginação)
+          required: false
+          schema:
+            type: integer
+            default: 0
       responses:
         '200':
-          description: The queried record.
+          description: Retorno de sucesso com a lista de condições de pagamento.
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  status:
-                    type: string
-                    enum: ["SUCESSO", "ERRO"]
-                    example: SUCESSO
-                  condicaopagto:
+                  items:
                     type: array
+                    description: Lista de condições de pagamento.
                     items:
                       type: object
                       properties:
                         codigo:
                           type: string
-                          example: "00000270"
+                          description: Código da condição de pagamento.
+                          example: "00000275"
                         descricao:
                           type: string
-                          example: "* A Vista"
+                          description: Descrição da condição de pagamento.
+                          example: "20 dias sem juros"
                         tipo:
                           type: string
+                          description: Tipo da condição.
                           example: "DDL"
                         prazos:
                           type: string
+                          description: Informação de prazos.
                           example: "0"
                         situacao:
                           type: string
+                          description: Situação da condição.
                           example: "ATIVO"
-                        datainclusao:
-                          type: string
-                          format: date-time
-                          example: null
-                        ultimaalteracao:
-                          type: string
-                          format: date-time
-                          example: null
+                  totalCount:
+                    type: integer
+                    description: Total de registros disponíveis na base de dados.
+                    example: 74
+                  limit:
+                    type: integer
+                    description: Número máximo de registros retornados por página.
+                    example: 2
+                  offset:
+                    type: integer
+                    description: Posição inicial da consulta atual (para paginação).
+                    example: 1
+                  filename:
+                    type: string
+                    description: Nome do recurso/arquivo retornado.
+                    example: "CondicaoPagto"
+                  count:
+                    type: integer
+                    description: Quantidade de registros retornados nesta página.
+                    example: 2
+                  hasMore:
+                    type: boolean
+                    description: Indica se há mais registros além dos retornados.
+                    example: true
+                  status:
+                    type: string
+                    description: Status da requisição.
+                    example: "SUCCESS"
+                  message:
+                    type: string
+                    description: Mensagem adicional da API.
+                    example: "Dados retornados com sucesso"
+              example:
+                items:
+                  - codigo: "00000275"
+                    descricao: "20 dias sem juros"
+                    tipo: "DDL"
+                    prazos: "0"
+                    situacao: "ATIVO"
+                  - codigo: "00000277"
+                    descricao: "16 dias"
+                    tipo: "DDL"
+                    prazos: "0"
+                    situacao: "ATIVO"
+                totalCount: 74
+                limit: 2
+                offset: 1
+                filename: "CondicaoPagto"
+                count: 2
+                hasMore: true
+                status: "SUCCESS"
+                message: "Dados retornados com sucesso"
         '401':
           description: Erro de autenticação
           content:
@@ -119,609 +255,721 @@ paths:
                 properties:
                   status:
                     type: string
-                    example: "ERRO"
+                    example: "ERROR"
                   mensagem:
                     type: string
                     example: "Autenticação inválida."
               example:
-                status: "ERRO"
+                status: "ERROR"
                 mensagem: "Autenticação inválida."
-  /ContasReceber:
+                
+  /vendas/v3/ContasReceber:
     get:
-      description: Retrieve a record from vendas/v3
+      tags:
+        - vendas/v3
+      summary: Lista contas a receber
+      description: >
+        Retorna uma lista paginada de contas a receber, com dados como cliente, nota fiscal, pedido vinculado, valor, vencimento e situação da conta.
+      parameters:
+        - name: i_limit
+          in: query
+          description: Número máximo de registros retornados por página
+          required: false
+          schema:
+            type: integer
+            default: 100
+        - name: i_offset
+          in: query
+          description: Posição inicial da consulta atual (para paginação)
+          required: false
+          schema:
+            type: integer
+            default: 0
       responses:
         '200':
-          description: The queried record.
+          description: Retorno de sucesso com a lista de contas a receber.
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  mensagem:
-                    type: string
-                  contasreceber:
-                    $ref: '#/components/schemas/RESULTSET'
-                  status:
-                    type: string
-      parameters:
-        - name: Authorization
-          in: header
-          schema:
-            type: string
-  /FormaCobranca:
-    get:
-      description: Retrieve a record from vendas/v3
-      responses:
-        '200':
-          description: The queried record.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  mensagem:
-                    type: string
-                  formacobranca:
-                    $ref: '#/components/schemas/RESULTSET'
-                  status:
-                    type: string
-      parameters:
-        - name: Authorization
-          in: header
-          schema:
-            type: string
-  /GrupoCliente:
-    get:
-      description: Retrieve a record from vendas/v3
-      responses:
-        '200':
-          description: The queried record.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  mensagem:
-                    type: string
-                  grupocliente:
-                    $ref: '#/components/schemas/RESULTSET'
-                  status:
-                    type: string
-      parameters:
-        - name: Authorization
-          in: header
-          schema:
-            type: string
-  /InclusaoCliente:
-    post:
-      description: Create a new record on vendas/v3
-      responses:
-        '201':
-          description: The successfully created record.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties: {}
-      parameters:
-        - name: Authorization
-          in: header
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/vendas_v3_ITEM'
-  /InclusaoCliente/Anexo:
-    post:
-      description: Create a new record on vendas/v3
-      responses:
-        '201':
-          description: The successfully created record.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties: {}
-      parameters:
-        - name: Authorization
-          in: header
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/vendas_v3_ITEM_2'
-  /InclusaoOrcamento:
-    post:
-      description: Create a new record on vendas/v3
-      responses:
-        '201':
-          description: The successfully created record.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties: {}
-      parameters:
-        - name: Authorization
-          in: header
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/vendas_v3_ITEM'
-  /InclusaoPedido:
-    post:
-      description: Create a new record on vendas/v3
-      responses:
-        '201':
-          description: The successfully created record.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties: {}
-      parameters:
-        - name: Authorization
-          in: header
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/vendas_v3_ITEM'
-  /ListaClientes:
-    get:
-      description: Retrieve a record from vendas/v3
-      responses:
-        '200':
-          description: The queried record.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  mensagem:
-                    type: string
-                  clientes:
-                    $ref: '#/components/schemas/RESULTSET'
-                  status:
-                    type: string
-      parameters:
-        - name: Authorization
-          in: header
-          schema:
-            type: string
-  /ListaNotaFiscal/{mod}/{numero}:
-    get:
-      description: Retrieve a record from vendas/v3
-      responses:
-        '200':
-          description: The queried record.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  mensagem:
-                    type: string
-                  notafiscal:
-                    $ref: '#/components/schemas/RESULTSET'
-                  status:
-                    type: string
-      parameters:
-        - name: mod
-          in: path
-          required: true
-          schema:
-            type: string
-            pattern: ^[^/]+$
-          description: implicit
-        - name: numero
-          in: path
-          required: true
-          schema:
-            type: string
-            pattern: ^[^/]+$
-          description: implicit
-        - name: Authorization
-          in: header
-          schema:
-            type: string
-  /ListaNotasFiscais:
-    get:
-      description: Retrieve a record from vendas/v3
-      responses:
-        '200':
-          description: The queried record.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  mensagem:
-                    type: string
-                  notasfiscais:
-                    $ref: '#/components/schemas/RESULTSET'
-                  status:
-                    type: string
-      parameters:
-        - name: Authorization
-          in: header
-          schema:
-            type: string
-        - name: cnpjcpfcliente
-          in: query
-          schema:
-            type: string
-          required: true
-        - name: datafinal
-          in: query
-          schema:
-            type: string
-          required: true
-        - name: datainicial
-          in: query
-          schema:
-            type: string
-          required: true
-        - name: mod
-          in: query
-          schema:
-            type: string
-          required: true
-  /ListaOrcamento/{numero}:
-    get:
-      description: Retrieve a record from vendas/v3
-      responses:
-        '200':
-          description: The queried record.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  mensagem:
-                    type: string
-                  orcamento:
-                    $ref: '#/components/schemas/RESULTSET'
-                  status:
-                    type: string
-      parameters:
-        - name: numero
-          in: path
-          required: true
-          schema:
-            type: string
-            pattern: ^[^/]+$
-          description: implicit
-        - name: Authorization
-          in: header
-          schema:
-            type: string
-  /ListaOrcamentos:
-    get:
-      description: Retrieve a record from vendas/v3
-      responses:
-        '200':
-          description: The queried record.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  mensagem:
-                    type: string
-                  orcamentos:
-                    $ref: '#/components/schemas/RESULTSET'
-                  status:
-                    type: string
-      parameters:
-        - name: Authorization
-          in: header
-          schema:
-            type: string
-        - name: cnpjcpfcliente
-          in: query
-          schema:
-            type: string
-          required: true
-        - name: dataenvio
-          in: query
-          schema:
-            type: string
-          required: true
-        - name: datafinal
-          in: query
-          schema:
-            type: string
-          required: true
-        - name: datainicial
-          in: query
-          schema:
-            type: string
-          required: true
-        - name: situacao
-          in: query
-          schema:
-            type: string
-          required: true
-        - name: vendedor
-          in: query
-          schema:
-            type: string
-          required: true
-  /ListaPedido/{numero}:
-    get:
-      description: Retrieve a record from vendas/v3
-      responses:
-        '200':
-          description: The queried record.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  mensagem:
-                    type: string
-                  pedido:
-                    $ref: '#/components/schemas/RESULTSET'
-                  status:
-                    type: string
-      parameters:
-        - name: numero
-          in: path
-          required: true
-          schema:
-            type: string
-            pattern: ^[^/]+$
-          description: implicit
-        - name: Authorization
-          in: header
-          schema:
-            type: string
-  /ListaPedidos:
-    get:
-      description: Retrieve a record from vendas/v3
-      responses:
-        '200':
-          description: The queried record.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  mensagem:
-                    type: string
-                  pedidos:
-                    $ref: '#/components/schemas/RESULTSET'
-                  status:
-                    type: string
-                  totalPorPagina:
+                  items:
+                    type: array
+                    description: Lista de contas a receber.
+                    items:
+                      type: object
+                      properties:
+                        tipo:
+                          type: string
+                          description: Tipo de conta.
+                          example: "RECEBER"
+                        empresa:
+                          type: string
+                          description: CNPJ da empresa.
+                          example: "32604723000196"
+                        documento:
+                          type: string
+                          description: Número do documento ou boleto.
+                          example: "1185 001"
+                        parcela:
+                          type: integer
+                          nullable: true
+                          description: Número da parcela, se houver.
+                          example: 1
+                        cnpjcpfcliente:
+                          type: string
+                          description: CNPJ ou CPF do cliente.
+                          example: "04203802000230"
+                        dataemissao:
+                          type: string
+                          format: date
+                          description: Data de emissão do documento.
+                          example: "2025-05-09"
+                        datavencimento:
+                          type: string
+                          format: date
+                          description: Data de vencimento da conta.
+                          example: "2025-05-09"
+                        valorconta:
+                          type: number
+                          format: float
+                          description: Valor total da conta.
+                          example: 441.10
+                        saldoemaberto:
+                          type: number
+                          format: float
+                          description: Valor ainda em aberto.
+                          example: 441.10
+                        situacao:
+                          type: string
+                          description: Situação da conta.
+                          example: "ABERTA"
+                        notafiscal:
+                          type: array
+                          description: Lista de notas fiscais vinculadas.
+                          items:
+                            type: object
+                            properties:
+                              mod:
+                                type: string
+                                description: Modelo da nota fiscal.
+                                example: "01"
+                              serie:
+                                type: integer
+                                description: Série da nota fiscal.
+                                example: 1
+                              numero:
+                                type: integer
+                                description: Número da nota fiscal.
+                                example: 1185
+                        pedido:
+                          type: array
+                          description: Lista de pedidos vinculados à conta.
+                          items:
+                            type: object
+                            properties:
+                              numero:
+                                type: integer
+                                description: Número do pedido.
+                                example: 5994
+                              vendedor:
+                                type: string
+                                description: Nome ou código do vendedor.
+                                example: "ADM_SERVICOS"
+                        datainclusao:
+                          type: string
+                          format: date-time
+                          description: Data/hora em que o registro foi incluído.
+                          example: "2025-05-09 16:43:35"
+                        ultimaalteracao:
+                          type: string
+                          format: date-time
+                          nullable: true
+                          description: Data/hora da última alteração (se houver).
+                          example: "2025-05-12 10:54:53"
+                  totalCount:
                     type: integer
-                  totalRegistros:
+                    description: Total de registros disponíveis na base de dados.
+                    example: 7470
+                  limit:
                     type: integer
-      parameters:
-        - name: Authorization
-          in: header
-          schema:
-            type: string
-        - name: cnpjcpfcliente
-          in: query
-          schema:
-            type: string
-          required: true
-        - name: dataautorizacao
-          in: query
-          schema:
-            type: string
-          required: true
-        - name: datafinal
-          in: query
-          schema:
-            type: string
-          required: true
-        - name: datainicial
-          in: query
-          schema:
-            type: string
-          required: true
-        - name: situacao
-          in: query
-          schema:
-            type: string
-          required: true
-        - name: vendedor
-          in: query
-          schema:
-            type: string
-          required: true
-  /MovtoSaidaConsumo:
-    post:
-      description: Create a new record on vendas/v3
-      responses:
-        '201':
-          description: The successfully created record.
+                    description: Número máximo de registros retornados por página.
+                    example: 2
+                  offset:
+                    type: integer
+                    description: Posição inicial da consulta atual (para paginação).
+                    example: 7455
+                  filename:
+                    type: string
+                    description: Nome do recurso/arquivo retornado.
+                    example: "ContasReceber"
+                  count:
+                    type: integer
+                    description: Quantidade de registros retornados nesta página.
+                    example: 2
+                  hasMore:
+                    type: boolean
+                    description: Indica se há mais registros além dos retornados.
+                    example: true
+                  status:
+                    type: string
+                    description: Status da requisição.
+                    example: "SUCCESS"
+                  message:
+                    type: string
+                    description: Mensagem adicional da API.
+                    example: "Dados retornados com sucesso"
+              example:
+                items:
+                  - tipo: "RECEBER"
+                    empresa: "32604723000196"
+                    documento: "1185 001"
+                    parcela: 1
+                    cnpjcpfcliente: "04203802000230"
+                    dataemissao: "2025-05-09"
+                    datavencimento: "2025-05-09"
+                    valorconta: 441.1
+                    saldoemaberto: 441.1
+                    situacao: "ABERTA"
+                    notafiscal:
+                      - mod: "01"
+                        serie: 1
+                        numero: 1185
+                    pedido:
+                      - numero: 5994
+                        vendedor: "ADM_SERVICOS"
+                    datainclusao: "2025-05-09 16:43:35"
+                  - tipo: "RECEBER"
+                    empresa: "32604723000196"
+                    documento: "12052025"
+                    cnpjcpfcliente: "04203802000230"
+                    dataemissao: "2025-05-30"
+                    datavencimento: "2025-05-31"
+                    valorconta: 21
+                    saldoemaberto: 21
+                    situacao: "ABERTA"
+                    datainclusao: "2025-05-12 10:52:09"
+                    ultimaalteracao: "2025-05-12 10:54:53"
+                totalCount: 7470
+                limit: 2
+                offset: 7455
+                filename: "ContasReceber"
+                count: 2
+                hasMore: true
+                status: "SUCCESS"
+                message: "Dados retornados com sucesso"
+        '401':
+          description: Erro de autenticação
           content:
             application/json:
               schema:
                 type: object
-                properties: {}
+                properties:
+                  status:
+                    type: string
+                    example: "ERROR"
+                  mensagem:
+                    type: string
+                    example: "Autenticação inválida."
+              example:
+                status: "ERROR"
+                mensagem: "Autenticação inválida."
+
+  /vendas/v3/FormaCobranca:
+    get:
+      tags:
+        - vendas/v3
+      summary: Lista formas de cobrança
+      description: >
+        Retorna uma lista paginada de formas de cobrança cadastradas, com informações como código, descrição, situação, data de inclusão e última alteração.
       parameters:
-        - name: Authorization
-          in: header
+        - name: i_limit
+          in: query
+          description: Número máximo de registros retornados por página
+          required: false
           schema:
-            type: string
+            type: integer
+            default: 100
+        - name: i_offset
+          in: query
+          description: Posição inicial da consulta atual (para paginação)
+          required: false
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: Retorno de sucesso com a lista de formas de cobrança.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    description: Lista de formas de cobrança.
+                    items:
+                      type: object
+                      properties:
+                        codigo:
+                          type: string
+                          description: Código da forma de cobrança.
+                          example: "PROP"
+                        empresa:
+                          type: string
+                          description: CNPJ da empresa.
+                          example: "32604723000196"
+                        descricao:
+                          type: string
+                          description: Descrição da forma de cobrança.
+                          example: "* Cobrança Própria *"
+                        situacao:
+                          type: string
+                          description: Situação da forma de cobrança.
+                          example: "ATIVO"
+                        datainclusao:
+                          type: string
+                          format: date-time
+                          description: Data/hora em que o registro foi incluído.
+                          example: "2021-01-29T15:16:11"
+                        ultimaalteracao:
+                          type: string
+                          format: date-time
+                          description: Data/hora da última alteração no registro.
+                          example: "2021-02-18T15:21:42"
+                  totalCount:
+                    type: integer
+                    description: Total de registros disponíveis na base de dados.
+                    example: 68
+                  limit:
+                    type: integer
+                    description: Número máximo de registros retornados por página.
+                    example: 2
+                  offset:
+                    type: integer
+                    description: Posição inicial da consulta atual (para paginação).
+                    example: 0
+                  filename:
+                    type: string
+                    description: Nome do recurso/arquivo retornado.
+                    example: "FormaCobranca"
+                  count:
+                    type: integer
+                    description: Quantidade de registros retornados nesta página.
+                    example: 2
+                  hasMore:
+                    type: boolean
+                    description: Indica se há mais registros além dos retornados.
+                    example: true
+                  status:
+                    type: string
+                    description: Status da requisição.
+                    example: "SUCCESS"
+                  message:
+                    type: string
+                    description: Mensagem adicional da API.
+                    example: "Dados retornados com sucesso"
+              example:
+                items:
+                  - codigo: "PROP"
+                    empresa: "32604723000196"
+                    descricao: "* Cobrança Própria *"
+                    situacao: "ATIVO"
+                    datainclusao: "2021-01-29T15:16:11"
+                    ultimaalteracao: "2021-02-18T15:21:42"
+                  - codigo: "ANTBB"
+                    empresa: "32604723000196"
+                    descricao: "ANTECIPADO B.B BRASIL"
+                    situacao: "INATIVO"
+                    datainclusao: "2021-03-25T09:49:23"
+                    ultimaalteracao: "2021-08-06T14:58:40"
+                totalCount: 68
+                limit: 2
+                offset: 0
+                filename: "FormaCobranca"
+                count: 2
+                hasMore: true
+                status: "SUCCESS"
+                message: "Dados retornados com sucesso"
+        '401':
+          description: Erro de autenticação
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "ERROR"
+                  mensagem:
+                    type: string
+                    example: "Autenticação inválida."
+              example:
+                status: "ERROR"
+                mensagem: "Autenticação inválida."
+
+  /vendas/v3/GrupoCliente:
+    get:
+      tags:
+        - vendas/v3
+      summary: Lista grupos de cliente
+      description: >
+        Retorna uma lista paginada de grupos de cliente cadastrados, com código e descrição.
+      parameters:
+        - name: i_limit
+          in: query
+          description: Número máximo de registros retornados por página
+          required: false
+          schema:
+            type: integer
+            default: 100
+        - name: i_offset
+          in: query
+          description: Posição inicial da consulta atual (para paginação)
+          required: false
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: Retorno de sucesso com a lista de grupos de cliente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    description: Lista de grupos de cliente.
+                    items:
+                      type: object
+                      properties:
+                        codigo:
+                          type: string
+                          description: Código do grupo de cliente.
+                          example: "81"
+                        descricao:
+                          type: string
+                          description: Descrição do grupo de cliente.
+                          example: "Funcionários"
+                  totalCount:
+                    type: integer
+                    description: Total de registros disponíveis na base de dados.
+                    example: 10
+                  limit:
+                    type: integer
+                    description: Número máximo de registros retornados por página.
+                    example: 2
+                  offset:
+                    type: integer
+                    description: Posição inicial da consulta atual (para paginação).
+                    example: 0
+                  filename:
+                    type: string
+                    description: Nome do recurso/arquivo retornado.
+                    example: "GrupoCliente"
+                  count:
+                    type: integer
+                    description: Quantidade de registros retornados nesta página.
+                    example: 2
+                  hasMore:
+                    type: boolean
+                    description: Indica se há mais registros além dos retornados.
+                    example: true
+                  status:
+                    type: string
+                    description: Status da requisição.
+                    example: "SUCCESS"
+                  message:
+                    type: string
+                    description: Mensagem adicional da API.
+                    example: "Dados retornados com sucesso"
+              example:
+                items:
+                  - codigo: "81"
+                    descricao: "Funcionários"
+                  - codigo: "101"
+                    descricao: "Terceiros"
+                totalCount: 10
+                limit: 2
+                offset: 0
+                filename: "GrupoCliente"
+                count: 2
+                hasMore: true
+                status: "SUCCESS"
+                message: "Dados retornados com sucesso"
+        '401':
+          description: Erro de autenticação
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "ERROR"
+                  mensagem:
+                    type: string
+                    example: "Autenticação inválida."
+              example:
+                status: "ERROR"
+                mensagem: "Autenticação inválida."
+
+  /vendas/v3/InclusaoCliente:
+    post:
+      tags:
+        - vendas/v3
+      summary: Inclusão de novo cliente
+      description: >
+        Permite cadastrar um novo cliente com dados completos, incluindo endereço, contatos e classificações.
       requestBody:
+        required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/vendas_v3_ITEM'
-  /Produtos:
-    get:
-      description: Retrieve a record from vendas/v3
+              type: object
+              properties:
+                tipocliente:
+                  type: string
+                  enum: [JURIDICA, FISICA]
+                  example: "JURIDICA"
+                cnpjcpfcliente:
+                  type: string
+                  example: "04203802000230"
+                nomecliente:
+                  type: string
+                  example: "Nome da Empresa LTDA"
+                nomefantasia:
+                  type: string
+                  example: "Empresa Fantasia"
+                inscricaoestadual:
+                  type: string
+                  example: ""
+                inscricaomunicipal:
+                  type: string
+                  example: ""
+                rg:
+                  type: object
+                  properties:
+                    numero:
+                      type: string
+                      example: ""
+                endereco:
+                  type: object
+                  properties:
+                    rua:
+                      type: string
+                      example: "AVENIDA ENG HEITOR A E GARCIA"
+                    bairro:
+                      type: string
+                      example: "Perus"
+                    numero:
+                      type: string
+                      example: "772"
+                    complemento:
+                      type: string
+                      example: "778"
+                    cep:
+                      type: string
+                      example: "05588001"
+                    cidade:
+                      type: string
+                      example: "SAO PAULO"
+                    uf:
+                      type: string
+                      example: "SP"
+                    codigoibge:
+                      type: string
+                      example: "3550308"
+                enderecoentrega:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      rua:
+                        type: string
+                        example: "string"
+                      bairro:
+                        type: string
+                        example: "string"
+                      numero:
+                        type: string
+                        example: "string"
+                      complemento:
+                        type: string
+                        example: ""
+                      cep:
+                        type: string
+                        example: "string"
+                      cidade:
+                        type: string
+                        example: "string"
+                      uf:
+                        type: string
+                        example: "SP"
+                      codigoibge:
+                        type: string
+                        example: "string"
+                telefone:
+                  type: string
+                  example: "string"
+                email:
+                  type: string
+                  example: "string"
+                classificacao:
+                  type: object
+                  properties:
+                    grupocliente:
+                      type: string
+                      example: ""
+                    regiao:
+                      type: string
+                      example: "DW"
+                    segmento:
+                      type: string
+                      example: ""
+                contato:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                        example: "string"
+                      telefone:
+                        type: string
+                        example: "string"
+                      cargo:
+                        type: string
+                        example: "string"
+                      nome:
+                        type: string
+                        example: "string"
+                      departamento:
+                        type: string
+                        example: "string"
+                      classeemail:
+                        type: string
+                        example: "COM,VEN,NF"
+                personalizado:
+                  type: object
+                  properties:
+                    campo1:
+                      type: string
+                      example: ""
+                    campo2:
+                      type: string
+                      example: "string"
+                    campo3:
+                      type: string
+                      example: "string"
+                    campo4:
+                      type: string
+                      example: "string"
+                anotacoes:
+                  type: string
+                  example: "string"
+            example:
+              tipocliente: "JURIDICA"
+              cnpjcpfcliente: "04203802000230"
+              nomecliente: "Nome da Empresa LTDA"
+              nomefantasia: "Empresa Fantasia"
+              inscricaoestadual: ""
+              inscricaomunicipal: ""
+              rg:
+                numero: ""
+              endereco:
+                rua: "AVENIDA ENG HEITOR A E GARCIA"
+                bairro: "Perus"
+                numero: "772"
+                complemento: "778"
+                cep: "05588001"
+                cidade: "SAO PAULO"
+                uf: "SP"
+                codigoibge: "3550308"
+              enderecoentrega:
+                - rua: "string"
+                  bairro: "string"
+                  numero: "string"
+                  complemento: ""
+                  cep: "string"
+                  cidade: "string"
+                  uf: "SP"
+                  codigoibge: "string"
+              telefone: "string"
+              email: "string"
+              classificacao:
+                grupocliente: ""
+                regiao: "DW"
+                segmento: ""
+              contato:
+                - email: "string"
+                  telefone: "string"
+                  cargo: "string"
+                  nome: "string"
+                  classeemail: "COM,VEN,NF"
+                - email: ""
+                  telefone: "string"
+                  cargo: ""
+                  nome: ""
+                  departamento: "string"
+                  classeemail: "COM"
+              personalizado:
+                campo1: ""
+                campo2: "string"
+                campo3: "string"
+                campo4: "string"
+              anotacoes: "string"
       responses:
-        '200':
-          description: The queried record.
+        '201':
+          description: Cliente incluído com sucesso
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  mensagem:
-                    type: string
-                  produtos:
-                    $ref: '#/components/schemas/RESULTSET'
                   status:
                     type: string
-      parameters:
-        - name: Authorization
-          in: header
-          schema:
-            type: string
-  /SaldoEstoque:
-    get:
-      description: Retrieve a record from vendas/v3
-      responses:
-        '200':
-          description: The queried record.
+                    example: "SUCCESS"
+                  message:
+                    type: string
+                    example: "Cliente incluído com sucesso"
+        '400':
+          description: Requisição inválida
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  mensagem:
-                    type: string
-                  saldoestoque:
-                    $ref: '#/components/schemas/RESULTSET'
                   status:
                     type: string
-      parameters:
-        - name: Authorization
-          in: header
-          schema:
-            type: string
-  /Servicos:
-    get:
-      description: Retrieve a record from vendas/v3
-      responses:
-        '200':
-          description: The queried record.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  mensagem:
+                    example: "ERROR"
+                  message:
                     type: string
-                  servicos:
-                    $ref: '#/components/schemas/RESULTSET'
-                  status:
-                    type: string
-      parameters:
-        - name: Authorization
-          in: header
-          schema:
-            type: string
-  /SucatasReceber:
-    get:
-      description: Retrieve a record from vendas/v3
-      responses:
-        '200':
-          description: The queried record.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  mensagem:
-                    type: string
-                  sucatasreceber:
-                    $ref: '#/components/schemas/RESULTSET'
-                  status:
-                    type: string
-      parameters:
-        - name: Authorization
-          in: header
-          schema:
-            type: string
-  /TabelaPrecos:
-    get:
-      description: Retrieve a record from vendas/v3
-      responses:
-        '200':
-          description: The queried record.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  mensagem:
-                    type: string
-                  tabelaprecos:
-                    $ref: '#/components/schemas/RESULTSET'
-                  status:
-                    type: string
-      parameters:
-        - name: Authorization
-          in: header
-          schema:
-            type: string
-  /Vendedores:
-    get:
-      description: Retrieve a record from vendas/v3
-      responses:
-        '200':
-          description: The queried record.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  mensagem:
-                    type: string
-                  vendedores:
-                    $ref: '#/components/schemas/RESULTSET'
-                  status:
-                    type: string
-      parameters:
-        - name: Authorization
-          in: header
-          schema:
-            type: string
+                    example: "Dados obrigatórios ausentes ou inválidos"
+
+
+
 components:
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
-  schemas:
-    RESULTSET:
-      type: string
-    STRING:
-      type: string
-    vendas_v3_ITEM:
-      properties:
-        Authorization:
-          type: string
-        body:
-          type: string
-    vendas_v3_ITEM_2:
-      properties:
-        Authorization:
-          type: string
-        body:
-          type: string
-        cnpjcpfcliente:
-          type: string
-        content_type:
-          type: string
-        filename:
-          type: string
-        mimetype:
-          type: string
+      bearerFormat: JWT
+
+  responses:
+    Unauthorized:
+      description: Erro de autenticação (token inválido ou ausente).
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "ERRO"
+              mensagem:
+                type: string
+                example: "Autenticação inválida."
+
+  
